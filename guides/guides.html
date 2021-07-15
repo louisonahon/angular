@@ -1,0 +1,435 @@
+<!-- 
+    ANGULAR IS SINGLE PAGE APPS. USES TO CREATE FULL STACK APPLICATION BY MAKING HTTP REQUESTS
+    TO A BACKEND SERVER 
+
+    FIRST IS TO OPEN A TERMINAL OR THE COMMAND PROMPT.
+
+    THEN INSTALL ANGULAR BY ENCODING THIS
+
+    nmp install -g @angular/cli
+    
+    THEN
+
+    ng new my-app OR ng new THEN YOUR TITLE LIKE ng new project201
+
+    THEN OPEN THE TERMINAL OF V.O.C VISUAL STUDIO CODE
+
+    THEN TYPE
+
+    ng serve  TO OPEN A LOCALHOST TO SEE WHAT YOU DOING
+
+    TO CHANGE YOUR TITLE OF THE PAGE GO TO
+
+    index.html 
+
+    THEN LOOK FOR TITLE AND CHANGE IT
+
+    THERE ARE FOUR FILES OF ANGULAR THAT MOST WE USE  
+
+    ts. TYPESCRIPT -  IS THE MEAN CLASS
+    html. TEMPLATE -
+    css. -
+    spec.ts - FOR TESTING
+
+    FOR DESIGNING FOR YOUR PAGE GO TO THE GLOBAL CSS THE 
+
+    styles.css
+
+
+    TO CREATE A FOLDER OF COMPONENT THEN SLASH THE TITLE LIKE HEADER ENCODE THIS
+
+    ng generate component components/header
+
+
+-->
+<!-- THIS IS MUST BE ENCODE IN THE TERMINAL OR THE COMMAND PROMPT 
+OF THE VISUAL STUDIO CODE
+( CTRL+` )
+
+
+-->
+
+<!-- to create folder of components for arrays encode this
+
+ng generate component components/header
+ng generate component components/buttons
+
+
+-->
+
+<!-- to create or to see your project
+
+    you must encode 
+
+    ng serve
+
+-->
+
+<!--  TO INSTALL FONTSTYLE AND SOME APPLICATION -->
+
+
+<!-- 
+    DURING IN THE TASK SERVICE GENERATED AND 
+
+IN THE TASKS.TS COMPONENT
+
+ONLY 
+import { Task } from '../../Task';
+
+Is only Imported no import {TASKS} from '../../Mock-task';
+
+and instead of tasks: Task[] = TASKS; IN THE TASKS.TS IT WILL BE CHANGE TO
+tasks: Task[] = [];
+
+AND IT ADDS  in TASKS.TS COMPONENT
+import { TaskService } from '../../services/task.service';
+
+IN ORDER TO USE THE SERVICE YOU NEED TO PROVIDER THAT IS ENCODED
+TO THE ( CONSTRUCTOR )
+
+constructor(private taskService: TaskService) { }
+
+TO CREATE some OBSERVABLE return value THAT CAN FIRED UP 
+
+import { observable, of } from 'rxjs'; IN THE TASK.SERVICE TS
+
+ngOnInit(): void {
+    this.tasks = this.taskService.getTasks(); IN THE TASKS.TS COMPONENT
+
+AFTER YOU ENCODED
+
+ getTasks(): Observable <Task[]> {
+    const tasks = of (TASKS);
+    return tasks; IN THE TASK SERVICE TS. FOR BEING OBSERVABLE
+
+GO BACK TO TASKS.TS COMPONENT  AND CHANGE THE 
+
+ngOnInit(): void {
+    this.tasks = this.taskService.getTasks(); 
+     TO
+     >
+     ngOnInit(): void {
+  this.taskService.getTasks().subscribe((tasks) => (this.tasks = tasks));
+  }
+
+
+GO INSTALL SOME TO MAKE REAL LIFE APPLICATION
+
+npm i json-server
+
+REMINDER IN JSON ALWAYS USE DOUBLE QOUTE ""
+    
+
+AND PACKAGE JSON IN "SCRIPTS"
+ADD
+ ALSO ADD
+ "lint": "ng lint",
+    "e2e": "ng e2e", AFTER THE "TEST"
+
+  "server":"json-server--wattch db.json --port 5000"
+
+AND CREATE db.json
+
+THEN COPY AND PASTE THE MOCK TASK ARRAYS TO THE db.json
+
+THEN INPUT THIS IN THE  TERMINAL TO CHECK IF DOES IT RUN
+IN THE SERVER THE LOCALHOST:5000/
+
+npm run server 
+
+AFTER GO TO TASK.SERVICES.TS TO ENCODE THIS
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+THEN GOING TO THE APP.MODULE.TS TO ENCODE THIS
+
+import {HttpClientModule} from  '@angular/common/http'
+
+THEN ADD THIS TO IMPORTS  OF THE APP.MODULE.TS
+
+HttpClientModule, 
+
+THEN GO BACK TO TASK.SERVICE.TS
+AND ENCODE THIS TO THE EXPORT CLASS
+
+private apiUrl = 'http://localhost:5000/tasks'
+
+THEN AFTER THAT YOU ENCODE THIS IN THE CONSTRUCTOR OF TASK.SERVICE.TS
+
+constructor(private http:HttpClient) { }
+
+THEN REPLACE THIS
+
+ // const tasks = of (TASKS);
+    // return tasks;
+
+    OF THE TASK.SERVICE.TS OF THIS
+
+  return this.http.get<Task[]>(this.apiUrl);
+
+THEN AFTER THAT IN THE TASK.SERVICE.TS
+
+ERASE THE  of WORD OF AND ALSO THE 
+import { Observable, observable, of } from 'rxjs';
+import {TASKS} from '../Mock-task';
+
+WE ADD SERVICE OF DELETE TASK
+
+WE ADD  IN THE TASK-ITEM COMPONENT.HTML
+
+        (click)="onDelete(task)"
+
+THEN WE ADD THIS IN THE TASK-ITEM COMPONENT.TS
+
+  onDelete(task: any) {
+    console.log(task);
+
+THEN WERE GOING TO EMIT ONDELETE TASK
+
+WE ADD OUTPUT AND EVENTEMITTER IN THE TASK ITEM COMPONENT.TS
+
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+THEN ADD OUPUT IN THE EXPORT CLASS
+
+  @Output () onDeleteTask: EventEmitter<Task> = new EventEmitter ()
+
+    THEN WE CHANGE THIS 
+        console.log(task);
+    TO
+        this.onDeleteTask.emit(task);
+    THEN WE GO TO THE TASK COMPONEN.HTML
+    WE ADD THIS     (onDeleteTask)="deleteTask(task)"
+
+    THEN WE SHOULD ADD THIS TO THE TASK.COMPONENT.TS
+deleteTask(task:Task){
+  this.taskService
+  .deleteTask(task)
+  .subscribe(
+  () => (this.tasks = this.tasks.filter(t => t.id ! === task.id)))
+
+
+    WE SHOULD ADD THIS TOO TO THE TASK SERVICE.ts
+
+    deleteTask(task:Task): Observable<Task>{
+  const url = `${this.apiUrl}/${task.id}`;
+  return this.http.delete<Task>(url);
+
+
+
+      WE SHOULD REQUEST A DELETE IN THE API 
+      WE CREATE
+
+      GO TO db.jason file THEN ADD THIS FOR EXAMPLE
+          "id": 4,
+            "text": "Test",
+            "day": "May 7th at 12:30",
+            "reminder": false
+        }
+        THEN GO TO BROWSER THEN DELETE IT IF WILL BE DONEE..
+         DILI MA DELETE NEED HELP!!!!!
+
+
+ 1 HOUR AND 13 MINS FOR THE  WE ADD task.reminder BY CLASS IF IT IS TRUE
+ AND THERE WILL BE GREEN IN THE SIDE IF IT IS TRUE
+ FIRST WE GO TASK ITEM COMPONENT.HTML
+  
+ WE FIRST ADD THIS INSIDE THE DIV
+  [ngClass]="{reminder: task.reminder }"
+
+  THEN WE ADD THIS IN TASK-ITEM COMPONENTS.TS
+    @Output () onToggleReminder: EventEmitter<Task> = new EventEmitter ()
+      AND
+        onToggle(task: any) {
+    this.onToggleReminder.emit(task);
+
+    THEN WE ADD THIS TO TASK.COMPONENT.HTML
+        (onToggleReminder)="ToogleReminder(task)"
+
+        THEN ADD THIS INT THE TASK.COMPONENT.TS
+        toggleReminder(task: any) {
+  task.reminder = !task.reminder;
+  console.log(task.reminder);
+
+  BASE IN VIDEO 1 HOUR AND 17 MINS 
+  THE GREEN LINE GOES ON AND OFF
+
+  THEN WE TYPE THIS TO TASK SERVICE.TS sending data/content TO THE HEADERS
+  updateTaskReminder(task: Task): Observable<Task>{
+  const url = `${this.apiUrl}/$(task.id)`;
+  return this.http.put<Task>(url, task)
+}
+
+TO PUT SOME POST REQUEST WE TYPE THIS TO THE TASK SERVICE TS
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':'application/json'
+  })
+}
+
+THEN WE INSERT THIS httpOptions in the UpdateTaskRemider return
+LIKE THIS
+  return this.http.put<Task>(url, task, httpOptions)
+
+    WE STOP AT 1 HOUR AND 19MINS AND 40 SECS. 
+
+    IN THE TASK COMPONENT TS WE CAN CHANGE THE
+
+  console.log(task.reminder); TO 
+
+WE ADD GENERATE 1 MORE COMPONENT FOR ADD FROM
+
+ng generate component components/add-task
+
+THEN WE ADD 
+<app-add-task></app-add-task> TO THE TASK COMPONENT.HTML
+WE ADD THE FORM IN THE ADD-TASK HTML WE ENCODE THIS
+<form>
+    <div class="form-control">
+    <label for="text">Task</label>
+    <input type="text" name="text" id="text" placeholder="AddTask" />
+    </div>
+</form>
+THEN WE COPY FOR DAY AND TIME
+THEN WE COPY THOSE PROPERTIES TO THE ADD-TASK COMPONENTS TS.
+BELOW TO THE EXPORT CLASS
+  text: string | undefined;
+  day: string | undefined;
+  reminder: boolean = false;
+
+THEN WE IMPORT FORMSMODULE TO THE APP.MODULE.TS
+import { FormsModule } from '@angular/forms';
+THEN WE ALSO ADD OR TYPE THE FORMSMODULE IN  THE IMPORT
+ imports: [
+    BrowserModule,
+    FontAwesomeModule,
+    HttpClientModule,
+    FormsModule],
+
+    THEN WE ADD THE ngmodel FOR DATA BINDING IN THE ADD-TASK COMPONENT.HTML
+    [(ngModel)] ="text"
+    [(ngModel)] ="day"
+    [(ngModel)] ="reminder"
+
+THEN WE DO ADD THE SUBMIT ngSubmit TO THE ADD-TASK COMPONENTS.HTML
+<form class="add-form" (ngSubmit)="onSubmit()">
+
+  THEN WE  ADD TASK COMPONENT TS FOR ngSubmit
+    onSubmit() {
+    if (!this.text) {
+      alert('Please add a Task!');
+      return;
+    }
+    const newTask = {
+    text: this.text,
+    day: this.day,
+    reminder: this.reminder
+  }
+  }
+  NEXT IS TO EMIT BY ADD EVENTEMITTER
+  TO DO - emit event TO ADD TASK COMPONENT TS 
+  THEN WE ADD OUTPUT AND EVENTEMITTER IN THE IMPORT AND EXPORT IN THE ADD-TASK COMPONENT.TS
+  import { Task  } from '../../Task';
+import { Component, OnInit, Output,EventEmitter } from '@angular/core';
+  @Output() onAddTask: EventEmitter <Task>= new EventEmitter();
+AND THEN BELOW THE CONST NEWTASK
+
+this.onAddTask.emit(newTask);
+THEN WE GO TO THE PARENT COMPONENT
+TO THE TASK COMPONENT HTML. WE ADD THIS
+ <app-add-task (onAddTask)="addTask($event)"></app-add-task>
+ THEN WE GO TO TASK COMPONENTS TS
+WE TYPE THIS
+
+addTask(task:Task) {
+  console.log(task);
+}
+AFTER ALL THE ADD-TASK WE ADD THIS TO THE TASK.SERVICE.TS
+
+addTask(task: Task): Observable<Task> {
+  return this.http.post<Task>(this.apiUrl, task, httpOptions);
+    }
+
+AFTER THAT WE GO THE PARENT COMPONENT TASK COMPONENT TS
+  this.taskService.addTask(task).subscribe((task) => (this.tasks.push(task)));
+
+WE ADD ANOTHER UI SERVICES TO SHOW ADD TASK.
+ng generate service services/ui
+
+WE import this to UI SERVICE.TS
+import { Observable, Subject } from 'rxjs';
+THEN TO THE EXPORT CLASS
+private showAddTask: boolean = false;
+private subject = new Subject<any>();
+
+  THEN WE CREATE FUNCTION TO TOOGLE ADDTASK
+
+  toggleAddTask(): void {
+    this.showAddTask = !this.showAddTask:
+    this.subject.next(this.showAddTask)
+  }
+
+  THEN WE IMPORT OUR UI SERVICE TO THE HEADER COMPONENT TS.
+  import { UiService } from '../../services/ui.service';
+import { Subscription } from 'rxjs';
+WE ALSO ADD THIS 
+title: string = 'Task Tracker';
+showAddTask: boolean;
+subscription: Subscription;
+WHEN USING THE SERVICE YOU NEED TO ADD IN A CONSTRUCTOR
+  constructor(private UiService:UiService) { }
+
+  THEN THIS TOGGLEADDTASK 
+    toggleAddtask() {
+    this.UiService.toggleAddTask();
+  }
+
+  TO CHANGE THE TOGGLE BUTTONS CHANGE INTO COLORS OR TEXT
+WE GO TO THE HEADER COMPONENT HTML THEN WE CHANGE THIS
+color="{{showAddTask ? 'red' : 'green'}}" 
+text="{{showAddTask ? 'close' : 'add'}}"
+then WE CHANGE MANUALLY IF IT IS TRUE OR FALSE  IN THE 
+HEADER COMPONENT TS.
+
+THEN WE ADD THIS TO THE HEADER COMPONENT TS CONSTRUCTOR FOR TOGGLING THE BUTTON
+this.subscription = this.uiService
+  .onToggle()
+  .subscribe((value) => (this.showAddTask = value));
+
+TO SHOW WHAT WE DID IN THE HEADER ALSO IN THE ADD-TASK COMPONENT WE ADD THIS
+WE THIS TO THE ADD-TASK COMPONENT TS
+
+import { UiService } from '../../services/ui.service';
+import { Subscription } from 'rxjs';
+
+showAddTask: boolean;
+subscription: Subscription;
+
+CONSTRUCTOR PART
+this.subscription = this.uiService
+  .onToggle()
+  .subscribe((value) => (this.showAddTask = value));
+
+
+
+WE STOP DUE TO BUG OF THE *ngIf="showAddTask" 1 : 50 :54secs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
